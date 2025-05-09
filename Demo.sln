@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.AppHost", "Demo.AppHos
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.ServiceDefaults", "Demo.ServiceDefaults\Demo.ServiceDefaults.csproj", "{C6933435-E6FA-4A91-B2DF-40977687BBCD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.ApiService", "Demo.ApiService\Demo.ApiService.csproj", "{C04AC06E-E273-4D25-A1CF-036F1430BB0A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Catalog", "Demo.Catalog\Demo.Catalog.csproj", "{C04AC06E-E273-4D25-A1CF-036F1430BB0A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

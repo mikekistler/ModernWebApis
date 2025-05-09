@@ -1,0 +1,15 @@
+@HostAddress = https://localhost:7516
+
+GET {{HostAddress}}/health
+
+###
+
+GET {{HostAddress}}/openapi/v1.json
+Accept: application/json
+
+###
+
+GET {{HostAddress}}/weatherforecast
+Accept: application/json
+
+###
