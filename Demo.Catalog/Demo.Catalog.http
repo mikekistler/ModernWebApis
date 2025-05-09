@@ -9,7 +9,14 @@ Accept: application/json
 
 ###
 
-GET {{HostAddress}}/weatherforecast
+GET {{HostAddress}}/catalog/items
+Accept: application/json
+
+###
+
+@itemId = 1
+
+GET {{HostAddress}}/catalog/items/{{itemId}}
 Accept: application/json
 
 ###
