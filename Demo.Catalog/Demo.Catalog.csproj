@@ -11,6 +11,11 @@
     <ProjectReference Include="..\Demo.ServiceDefaults\Demo.ServiceDefaults.csproj" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <!-- Enable the generation of interceptors for the validation attributes -->
+    <InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.AspNetCore.Http.Validation.Generated</InterceptorsNamespaces>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0-preview.4.*" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.0-preview.4.*" />

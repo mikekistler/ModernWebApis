@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Catalog.Models;
 
 public class CatalogItem
@@ -6,11 +8,18 @@ public class CatalogItem
     public int Id { get; set; }
 
     // Name of the product
+    [Required]
+    [MaxLength(50)]
+    [MinLength(3, ErrorMessage = "{0} must be at least 3 characters long.")]
     public string? Name { get; set; }
 
     // Detailed description of the product
+    [Required]
+    [StringLength(500, MinimumLength = 10)]
     public string? Description { get; set; }
 
+    [Required]
+    [Range(0.01, 10000)]
     // Current price of the product
     public decimal Price { get; set; }
 
@@ -18,9 +27,13 @@ public class CatalogItem
     public string? PictureFileName { get; set; }
 
     // Category or type of the product
+    [Required]
+    [MaxLength(100)]
     public string? CatalogType { get; set; }
 
     // Brand of the product
+    [Required]
+    [MaxLength(100)]
     public string? CatalogBrand { get; set; }
 
     // Current quantity available in stock

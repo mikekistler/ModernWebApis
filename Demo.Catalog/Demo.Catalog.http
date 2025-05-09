@@ -33,3 +33,20 @@ GET {{HostAddress}}/catalog/items?type=Footwear
 # A request with an unknown item id returns a 404 NotFound with ProblemDetails response
 
 GET {{HostAddress}}/catalog/items/463
+
+###
+
+# Invalid - name is missing
+
+POST {{HostAddress}}/catalog/items
+content-type: application/json
+
+{
+  "id": 421,
+  "price": 100,
+  "description": "Description1",
+  "pictureFileName": "item421.png",
+  "catalogTypeId": 1,
+  "catalogBrandId": 2
+}
+
