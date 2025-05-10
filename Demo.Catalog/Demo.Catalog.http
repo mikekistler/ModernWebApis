@@ -50,3 +50,198 @@ content-type: application/json
   "catalogBrandId": 2
 }
 
+###
+# Test - Invalid price (below minimum)
+POST {{HostAddress}}/catalog/items
+content-type: application/json
+
+{
+  "name": "Test Item",
+  "description": "This is a test description that is long enough",
+  "price": 0,
+  "catalogType": "Test Type",
+  "catalogBrand": "Test Brand",
+  "availableStock": 10
+}
+
+###
+# Test - Invalid price (above maximum)
+POST {{HostAddress}}/catalog/items
+content-type: application/json
+
+{
+  "name": "Test Item",
+  "description": "This is a test description that is long enough",
+  "price": 20000,
+  "catalogType": "Test Type",
+  "catalogBrand": "Test Brand",
+  "availableStock": 10
+}
+
+###
+# Test - Name too short (< 3 characters)
+POST {{HostAddress}}/catalog/items
+content-type: application/json
+
+{
+  "name": "AB",
+  "description": "This is a test description that is long enough",
+  "price": 199.99,
+  "catalogType": "Test Type",
+  "catalogBrand": "Test Brand",
+  "availableStock": 10
+}
+
+###
+# Test - Name too long (> 50 characters)
+POST {{HostAddress}}/catalog/items
+content-type: application/json
+
+{
+  "name": "This name is way too long for the catalog item and should trigger a validation error because it exceeds fifty characters",
+  "description": "This is a test description that is long enough",
+  "price": 199.99,
+  "catalogType": "Test Type",
+  "catalogBrand": "Test Brand",
+  "availableStock": 10
+}
+
+###
+# Test - Description too short (< 10 characters)
+POST {{HostAddress}}/catalog/items
+content-type: application/json
+
+{
+  "name": "Test Item",
+  "description": "Too short",
+  "price": 199.99,
+  "catalogType": "Test Type",
+  "catalogBrand": "Test Brand",
+  "availableStock": 10
+}
+
+###
+# Test - Description too long (> 500 characters)
+POST {{HostAddress}}/catalog/items
+content-type: application/json
+
+{
+  "name": "Test Item",
+  "description": "This description is way too long and should exceed the 500 character limit specified in the API schema. It's going to be filled with a bunch of repetitive text just to make it go over the limit. This description is way too long and should exceed the 500 character limit specified in the API schema. It's going to be filled with a bunch of repetitive text just to make it go over the limit. This description is way too long and should exceed the 500 character limit specified in the API schema. It's going to be filled with a bunch of repetitive text just to make it go over the limit. This description is way too long and should exceed the 500 character limit specified in the API schema. It's going to be filled with a bunch of repetitive text just to make it go over the limit.",
+  "price": 199.99,
+  "catalogType": "Test Type",
+  "catalogBrand": "Test Brand",
+  "availableStock": 10
+}
+
+###
+# Test - Missing required properties (catalogType and catalogBrand)
+POST {{HostAddress}}/catalog/items
+content-type: application/json
+
+{
+  "name": "Test Item",
+  "description": "This is a test description that is long enough",
+  "price": 199.99,
+  "availableStock": 10
+}
+
+###
+# Test - CatalogType too long (> 100 characters)
+POST {{HostAddress}}/catalog/items
+content-type: application/json
+
+{
+  "name": "Test Item",
+  "description": "This is a test description that is long enough",
+  "price": 199.99,
+  "catalogType": "This catalog type is way too long and should exceed the 100 character limit specified in the API schema for this field",
+  "catalogBrand": "Test Brand",
+  "availableStock": 10
+}
+
+###
+# Test - CatalogBrand too long (> 100 characters)
+POST {{HostAddress}}/catalog/items
+content-type: application/json
+
+{
+  "name": "Test Item",
+  "description": "This is a test description that is long enough",
+  "price": 199.99,
+  "catalogType": "Test Type",
+  "catalogBrand": "This catalog brand is way too long and should exceed the 100 character limit specified in the API schema for this field",
+  "availableStock": 10
+}
+
+###
+# Test - Invalid pagination parameters (negative PageSize and PageIndex)
+GET {{HostAddress}}/catalog/items?PageSize=-10&PageIndex=-5
+Accept: application/json
+
+###
+# Test - Batch get with invalid ids format
+GET {{HostAddress}}/catalog/items/by?ids=1,2,3
+Accept: application/json
+
+###
+# Test - Batch get with empty ids
+GET {{HostAddress}}/catalog/items/by
+Accept: application/json
+
+###
+# Test - Successful create request with all valid required fields
+POST {{HostAddress}}/catalog/items
+content-type: application/json
+
+{
+  "name": "Test Valid Item",
+  "description": "This is a valid test description for a catalog item",
+  "price": 299.99,
+  "catalogType": "Valid Type",
+  "catalogBrand": "Valid Brand",
+  "availableStock": 100,
+  "restockThreshold": 10,
+  "maxStockThreshold": 200,
+  "onReorder": false
+}
+
+###
+# Test - PUT update with mismatched ID
+PUT {{HostAddress}}/catalog/items/999
+content-type: application/json
+
+{
+  "id": 1,
+  "name": "Updated Item",
+  "description": "This is an updated description",
+  "price": 399.99,
+  "catalogType": "Updated Type",
+  "catalogBrand": "Updated Brand",
+  "availableStock": 50
+}
+
+###
+# Test - PUT with valid data
+PUT {{HostAddress}}/catalog/items/1
+content-type: application/json
+
+{
+  "id": 1,
+  "name": "Updated Item",
+  "description": "This is an updated description for the existing item",
+  "price": 399.99,
+  "catalogType": "Updated Type",
+  "catalogBrand": "Updated Brand",
+  "availableStock": 50
+}
+
+###
+# Test - DELETE non-existent item
+DELETE {{HostAddress}}/catalog/items/9999
+
+###
+# Test - Request picture for non-existent item
+GET {{HostAddress}}/catalog/items/9999/pic
+Accept: image/jpeg
+
