@@ -20,3 +20,11 @@ GET {{HostAddress}}/catalog/items/{{itemId}}
 Accept: application/json
 
 ###
+
+GET {{HostAddress}}/catalog/items?type=Footwear
+
+###
+
+# A request with an unknown item id returns a 404 NotFound with ProblemDetails response
+
+GET {{HostAddress}}/catalog/items/463
