@@ -21,6 +21,11 @@ Accept: application/json
 
 ###
 
+GET {{HostAddress}}/catalog/items/{{itemId}}/pic
+Accept: image/jpeg
+
+###
+
 GET {{HostAddress}}/catalog/items?type=Footwear
 
 ###
