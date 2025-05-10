@@ -19,6 +19,12 @@
   <PropertyGroup>
     <!-- Enable XML documentation file generation -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Suppress CS1591 Missing XML comment for publicly visible type or member -->
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <OpenApiDocumentsDirectory>.</OpenApiDocumentsDirectory>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,6 +35,10 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.0-preview.4.*" />
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" Version="10.0.0-preview.3.*">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Scalar.AspNetCore" Version="2.2.7" />
 
   </ItemGroup>

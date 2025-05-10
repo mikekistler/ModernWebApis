@@ -7,7 +7,7 @@ namespace Catalog.Models;
 public class PaginatedItems<TEntity>(int pageIndex, int pageSize, long count, IEnumerable<TEntity> data) where TEntity : class
 {
     /// <summary>
-    /// Gets the zero-based index of current page.
+    /// The zero-based index of current page.
     /// </summary>
     public int PageIndex { get; } = pageIndex;
 
