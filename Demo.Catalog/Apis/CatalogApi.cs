@@ -18,20 +18,41 @@ public static class CatalogApi
         var api = app.MapGroup("catalog");
 
         // Routes for querying catalog items.
-        api.MapGet("/items", GetAllItems);
+        api.MapGet("/items", GetAllItems)
+            .WithName("ListItems")
+            .WithSummary("List catalog items")
+            .WithDescription("Get a paginated list of items in the catalog.")
 
-        api.MapGet("/items/by", GetItemsByIds);
+        api.MapGet("/items/by", GetItemsByIds)
+            .WithName("BatchGetItems")
+            .WithSummary("Batch get catalog items")
+            .WithDescription("Get multiple items from the catalog");
 
-        api.MapGet("/items/{id:int}", GetItemById);
+        api.MapGet("/items/{id:int}", GetItemById)
+            .WithName("GetItem")
+            .WithSummary("Get catalog item")
+            .WithDescription("Get an item from the catalog");
 
-        api.MapGet("/items/{id:int}/pic", GetItemPictureById);
+        api.MapGet("/items/{id:int}/pic", GetItemPictureById)
+            .WithName("GetItemPicture")
+            .WithSummary("Get catalog item picture")
+            .WithDescription("Get the picture for a catalog item");
 
         // Routes for modifying catalog items.
-        api.MapPut("/items/{id:int}", UpdateItem);
+        api.MapPut("/items/{id:int}", UpdateItem)
+            .WithName("UpdateItem")
+            .WithSummary("Create or replace a catalog item")
+            .WithDescription("Create or replace a catalog item");
 
-        api.MapPost("/items", CreateItem);
+        api.MapPost("/items", CreateItem)
+            .WithName("CreateItem")
+            .WithSummary("Create a catalog item")
+            .WithDescription("Create a new item in the catalog");
 
-        api.MapDelete("/items/{id:int}", DeleteItemById);
+        api.MapDelete("/items/{id:int}", DeleteItemById)
+            .WithName("DeleteItem")
+            .WithSummary("Delete catalog item")
+            .WithDescription("Delete the specified catalog item");
 
         return app;
     }
@@ -41,9 +62,9 @@ public static class CatalogApi
         HttpRequest httpRequest,
         [AsParameters] CatalogServices services,
         [AsParameters] PaginationRequest paginationRequest,
-        string? name,
-        string? type,
-        string? brand
+        [Description("The name of the item to return")] string? name,
+        [Description("The type of items to return")] string? type,
+        [Description("The brand of items to return")] string? brand
     )
     {
         // workaround for https://github.com/dotnet/aspnetcore/issues/61770
@@ -83,7 +104,7 @@ public static class CatalogApi
     public static async Task<Ok<List<CatalogItem>>> GetItemsByIds(
         HttpRequest httpRequest,
         [AsParameters] CatalogServices services,
-        int[] ids)
+        [Description("List of ids for catalog items to return")] int[] ids)
     {
         // workaround for https://github.com/dotnet/aspnetcore/issues/61770
         var Context = httpRequest.HttpContext.RequestServices.GetRequiredService<CatalogContext>();
@@ -96,7 +117,7 @@ public static class CatalogApi
     public static async Task<Results<Ok<CatalogItem>, NotFound, BadRequest<ProblemDetails>>> GetItemById(
         HttpRequest httpRequest,
         [AsParameters] CatalogServices services,
-        int id)
+        [Description("The catalog item id")] int id)
     {
         if (id <= 0)
         {
@@ -124,7 +145,7 @@ public static class CatalogApi
     public static async Task<Results<PhysicalFileHttpResult,NotFound>> GetItemPictureById(
         HttpRequest httpRequest,
         IWebHostEnvironment environment,
-        int id)
+        [Description("The catalog item id")] int id)
     {
         // workaround for https://github.com/dotnet/aspnetcore/issues/61770
         var Context = httpRequest.HttpContext.RequestServices.GetRequiredService<CatalogContext>();
@@ -161,7 +182,7 @@ public static class CatalogApi
 
     public static async Task<Results<Created, BadRequest<ProblemDetails>, NotFound<ProblemDetails>>> UpdateItem(
         HttpContext httpContext,
-        int id,
+        [Description("The catalog item id")] int id,
         [AsParameters] CatalogServices services,
         CatalogItem productToUpdate)
     {
@@ -220,7 +241,7 @@ public static class CatalogApi
     public static async Task<Results<NoContent, NotFound>> DeleteItemById(
         HttpRequest httpRequest,
         [AsParameters] CatalogServices services,
-        int id)
+        [Description("The catalog item id")] int id)
     {
         // workaround for https://github.com/dotnet/aspnetcore/issues/61770
         var Context = httpRequest.HttpContext.RequestServices.GetRequiredService<CatalogContext>();
