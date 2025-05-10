@@ -16,6 +16,23 @@
     <InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.AspNetCore.Http.Validation.Generated</InterceptorsNamespaces>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!-- Enable XML documentation file generation -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Suppress CS1591 Missing XML comment for publicly visible type or member -->
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
+  <Target Name="AddOpenApiDependencies" AfterTargets="ResolveReferences">
+    <ItemGroup>
+      <!-- Include XML documentation from Microsoft.AspNetCore.Http.Abstractions assembly to get metadata for ProblemDetails -->
+      <AdditionalFiles
+            Include="@(ReferencePath->'%(RootDir)%(Directory)%(Filename).xml')"
+            Condition="'%(ReferencePath.Filename)' == 'Microsoft.AspNetCore.Http.Abstractions'"
+            KeepMetadata="Identity;HintPath" />
+    </ItemGroup>
+  </Target>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch.SystemTextJson" Version="10.0.0-preview.4.25258.110" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0-preview.4.*" />
