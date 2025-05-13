@@ -19,7 +19,7 @@ public static class CatalogApi
 
         // Routes for querying catalog items.
         api.MapGet("/items", GetAllItems);
-;
+
         api.MapGet("/items/by", GetItemsByIds);
 
         api.MapGet("/items/{id:int}", GetItemById);
@@ -38,6 +38,7 @@ public static class CatalogApi
 
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     public static async Task<Ok<PaginatedItems<CatalogItem>>> GetAllItems(
+        HttpRequest httpRequest,
         [AsParameters] CatalogServices services,
         [AsParameters] PaginationRequest paginationRequest,
         string? name,
@@ -45,10 +46,13 @@ public static class CatalogApi
         string? brand
     )
     {
+        // workaround for https://github.com/dotnet/aspnetcore/issues/61770
+        var Context = httpRequest.HttpContext.RequestServices.GetRequiredService<CatalogContext>();
+
         var pageSize = paginationRequest.PageSize ?? 10;
         var pageIndex = paginationRequest.PageIndex ?? 0;
 
-        var root = (IQueryable<CatalogItem>)services.Context.CatalogItems;
+        var root = (IQueryable<CatalogItem>)Context.CatalogItems;
 
         if (name is not null)
         {
@@ -77,16 +81,20 @@ public static class CatalogApi
 
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     public static async Task<Ok<List<CatalogItem>>> GetItemsByIds(
+        HttpRequest httpRequest,
         [AsParameters] CatalogServices services,
         int[] ids)
     {
-        var items = await services.Context.CatalogItems.Where(item => ids.Contains(item.Id)).ToListAsync();
+        // workaround for https://github.com/dotnet/aspnetcore/issues/61770
+        var Context = httpRequest.HttpContext.RequestServices.GetRequiredService<CatalogContext>();
+
+        var items = await Context.CatalogItems.Where(item => ids.Contains(item.Id)).ToListAsync();
         return TypedResults.Ok(items);
     }
 
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     public static async Task<Results<Ok<CatalogItem>, NotFound, BadRequest<ProblemDetails>>> GetItemById(
-        HttpContext httpContext,
+        HttpRequest httpRequest,
         [AsParameters] CatalogServices services,
         int id)
     {
@@ -97,7 +105,10 @@ public static class CatalogApi
             });
         }
 
-        var item = await services.Context.CatalogItems.SingleOrDefaultAsync(ci => ci.Id == id);
+        // workaround for https://github.com/dotnet/aspnetcore/issues/61770
+        var Context = httpRequest.HttpContext.RequestServices.GetRequiredService<CatalogContext>();
+
+        var item = await Context.CatalogItems.SingleOrDefaultAsync(ci => ci.Id == id);
 
         if (item == null)
         {
@@ -111,11 +122,14 @@ public static class CatalogApi
         [ "image/png", "image/gif", "image/jpeg", "image/bmp", "image/tiff",
           "image/wmf", "image/jp2", "image/svg+xml", "image/webp" ])]
     public static async Task<Results<PhysicalFileHttpResult,NotFound>> GetItemPictureById(
-        CatalogContext context,
+        HttpRequest httpRequest,
         IWebHostEnvironment environment,
         int id)
     {
-        var item = await context.CatalogItems.FindAsync(id);
+        // workaround for https://github.com/dotnet/aspnetcore/issues/61770
+        var Context = httpRequest.HttpContext.RequestServices.GetRequiredService<CatalogContext>();
+
+        var item = await Context.CatalogItems.FindAsync(id);
 
         if (item is null)
         {
@@ -132,7 +146,7 @@ public static class CatalogApi
     }
 
     public static async Task<Results<Created, BadRequest<ProblemDetails>, NotFound<ProblemDetails>>> UpdateItemV1(
-        HttpContext httpContext,
+        HttpRequest httpRequest,
         [AsParameters] CatalogServices services,
         CatalogItem productToUpdate)
     {
@@ -142,7 +156,7 @@ public static class CatalogApi
                 Detail = "Item id must be provided in the request body."
             });
         }
-        return await UpdateItem(httpContext, productToUpdate.Id, services, productToUpdate);
+        return await UpdateItem(httpRequest.HttpContext, productToUpdate.Id, services, productToUpdate);
     }
 
     public static async Task<Results<Created, BadRequest<ProblemDetails>, NotFound<ProblemDetails>>> UpdateItem(
@@ -151,7 +165,10 @@ public static class CatalogApi
         [AsParameters] CatalogServices services,
         CatalogItem productToUpdate)
     {
-        var catalogItem = await services.Context.CatalogItems.SingleOrDefaultAsync(i => i.Id == id);
+        // workaround for https://github.com/dotnet/aspnetcore/issues/61770
+        var Context = httpContext.RequestServices.GetRequiredService<CatalogContext>();
+
+        var catalogItem = await Context.CatalogItems.SingleOrDefaultAsync(i => i.Id == id);
 
         if (catalogItem == null)
         {
@@ -161,21 +178,25 @@ public static class CatalogApi
         }
 
         // Update current product
-        var catalogEntry = services.Context.Entry(catalogItem);
+        var catalogEntry = Context.Entry(catalogItem);
         catalogEntry.CurrentValues.SetValues(productToUpdate);
 
         var priceEntry = catalogEntry.Property(i => i.Price);
 
-        await services.Context.SaveChangesAsync();
+        await Context.SaveChangesAsync();
 
         return TypedResults.Created($"/api/catalog/items/{id}");
     }
 
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     public static async Task<Created> CreateItem(
+        HttpRequest httpRequest,
         [AsParameters] CatalogServices services,
         CatalogItem product)
     {
+        // workaround for https://github.com/dotnet/aspnetcore/issues/61770
+        var Context = httpRequest.HttpContext.RequestServices.GetRequiredService<CatalogContext>();
+
         var item = new CatalogItem
         {
             Id = product.Id,
@@ -190,25 +211,29 @@ public static class CatalogApi
             MaxStockThreshold = product.MaxStockThreshold
         };
 
-        services.Context.CatalogItems.Add(item);
-        await services.Context.SaveChangesAsync();
+        Context.CatalogItems.Add(item);
+        await Context.SaveChangesAsync();
 
         return TypedResults.Created($"/api/catalog/items/{item.Id}");
     }
 
     public static async Task<Results<NoContent, NotFound>> DeleteItemById(
+        HttpRequest httpRequest,
         [AsParameters] CatalogServices services,
         int id)
     {
-        var item = services.Context.CatalogItems.SingleOrDefault(x => x.Id == id);
+        // workaround for https://github.com/dotnet/aspnetcore/issues/61770
+        var Context = httpRequest.HttpContext.RequestServices.GetRequiredService<CatalogContext>();
+
+        var item = await Context.CatalogItems.SingleOrDefaultAsync(x => x.Id == id);
 
         if (item is null)
         {
             return TypedResults.NotFound();
         }
 
-        services.Context.CatalogItems.Remove(item);
-        await services.Context.SaveChangesAsync();
+        Context.CatalogItems.Remove(item);
+        await Context.SaveChangesAsync();
         return TypedResults.NoContent();
     }
 

@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add service defaults & Aspire client integrations.
 builder.AddServiceDefaults();
 
-// builder.Services.AddValidation();
+builder.Services.AddValidation();
 
 // Add services to the container.
 builder.Services.AddProblemDetails();
