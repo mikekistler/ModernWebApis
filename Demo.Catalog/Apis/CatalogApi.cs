@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +25,7 @@ public static class CatalogApi
         api.MapGet("/items/{id:int}/pic", GetItemPictureById);
 
         // Routes for modifying catalog items.
-        api.MapPut("/items/{id:int}", UpdateItem);
+        api.MapPatch("/items/{id:int}", UpdateItem);
 
         api.MapPost("/items", CreateItem);
 
@@ -128,11 +129,12 @@ public static class CatalogApi
         return TypedResults.PhysicalFile(path, mimetype, lastModified: lastModified);
     }
 
-    public static async Task<Results<Created, BadRequest<ProblemDetails>, NotFound<ProblemDetails>>> UpdateItem(
+    public static async Task<Results<Ok<CatalogItem>, ValidationProblem, NotFound<ProblemDetails>>> UpdateItem(
         HttpContext httpContext,
         int id,
         [AsParameters] CatalogServices services,
-        CatalogItem productToUpdate)
+        JsonPatchDocument<CatalogItem> patchDoc
+    )
     {
         var catalogItem = await services.Context.CatalogItems.SingleOrDefaultAsync(i => i.Id == id);
 
@@ -143,15 +145,27 @@ public static class CatalogApi
             });
         }
 
-        // Update current product
-        var catalogEntry = services.Context.Entry(catalogItem);
-        catalogEntry.CurrentValues.SetValues(productToUpdate);
+        if (patchDoc != null)
+        {
+            Dictionary<string, string[]>? errors = null;
+            patchDoc.ApplyTo(catalogItem, jsonPatchError =>
+                {
+                    errors ??= new();
+                    var key = jsonPatchError.AffectedObject.GetType().Name;
+                    if (!errors.ContainsKey(key))
+                    {
+                        errors.Add(key, new string[] { });
+                    }
+                    errors[key] = errors[key].Append(jsonPatchError.ErrorMessage).ToArray();
+                });
+            if (errors != null)
+            {
+                return TypedResults.ValidationProblem(errors);
+            }
+            await services.Context.SaveChangesAsync();
+        }
 
-        var priceEntry = catalogEntry.Property(i => i.Price);
-
-        await services.Context.SaveChangesAsync();
-
-        return TypedResults.Created($"/api/catalog/items/{id}");
+        return TypedResults.Ok(catalogItem);
     }
 
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
