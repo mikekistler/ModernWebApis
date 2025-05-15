@@ -21,6 +21,12 @@ Accept: application/json
 
 ###
 
+# A request with an unknown item id returns a 404 NotFound with ProblemDetails response
+
+GET {{HostAddress}}/catalog/items/463
+
+###
+
 GET {{HostAddress}}/catalog/items/{{itemId}}/pic
 Accept: image/jpeg
 
@@ -30,6 +36,39 @@ GET {{HostAddress}}/catalog/items?type=Footwear
 
 ###
 
-# A request with an unknown item id returns a 404 NotFound with ProblemDetails response
+@itemId = 57
 
-GET {{HostAddress}}/catalog/items/463
+GET {{HostAddress}}/catalog/items/{{itemId}}
+Accept: application/json
+
+###
+
+PATCH {{HostAddress}}/catalog/items/{{itemId}}
+Content-Type: application/json-patch+json
+
+[
+  {
+    "op": "replace",
+    "path": "/price",
+    "value": 109.99
+  }
+]
+
+###
+
+PATCH {{HostAddress}}/catalog/items/{{itemId}}
+Content-Type: application/json-patch+json
+
+[
+  {
+    "op": "test",
+    "path": "/availableStock",
+    "value": 99
+  },
+  {
+    "op": "replace",
+    "path": "/availableStock",
+    "value": 98
+  }
+]
+
