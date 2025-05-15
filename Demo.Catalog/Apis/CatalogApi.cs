@@ -36,14 +36,14 @@ public static class CatalogApi
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     public static async Task<Ok<PaginatedItems<CatalogItem>>> GetAllItems(
         [AsParameters] CatalogServices services,
-        [AsParameters] PaginationRequest paginationRequest,
         string? name,
         string? type,
-        string? brand
+        string? brand,
+        [AsParameters] PaginationRequest paginationRequest
     )
     {
-        var pageSize = paginationRequest.PageSize ?? 10;
-        var pageIndex = paginationRequest.PageIndex ?? 0;
+        var pageSize = paginationRequest.PageSize;
+        var pageIndex = paginationRequest.PageIndex;
 
         var root = (IQueryable<CatalogItem>)services.Context.CatalogItems;
 
