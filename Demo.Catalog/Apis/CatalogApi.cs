@@ -128,20 +128,6 @@ public static class CatalogApi
         return TypedResults.PhysicalFile(path, mimetype, lastModified: lastModified);
     }
 
-    public static async Task<Results<Created, BadRequest<ProblemDetails>, NotFound<ProblemDetails>>> UpdateItemV1(
-        HttpContext httpContext,
-        [AsParameters] CatalogServices services,
-        CatalogItem productToUpdate)
-    {
-        if (productToUpdate?.Id == null)
-        {
-            return TypedResults.BadRequest<ProblemDetails>(new (){
-                Detail = "Item id must be provided in the request body."
-            });
-        }
-        return await UpdateItem(httpContext, productToUpdate.Id, services, productToUpdate);
-    }
-
     public static async Task<Results<Created, BadRequest<ProblemDetails>, NotFound<ProblemDetails>>> UpdateItem(
         HttpContext httpContext,
         int id,
