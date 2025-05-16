@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Catalog.Data;
 using Catalog.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Catalog.API;
 
@@ -24,7 +25,9 @@ public static class CatalogApi
 
         api.MapGet("/items/{id:int}/pic", GetItemPictureById);
 
-        api.MapPatch("/items/{id:int}", UpdateItem);
+        // Routes for modifying catalog items.
+        // Disable patch endpoint due to known issue with Validation and JsonPatchDocument
+        // api.MapPatch("/items/{id:int}", UpdateItem);
 
         api.MapPost("/items", CreateItem);
 
@@ -101,7 +104,7 @@ public static class CatalogApi
     public static async Task<Ok<List<CatalogItem>>> GetItemsByIds(
         HttpRequest httpRequest,
         [AsParameters] CatalogServices services,
-        int[] ids)
+        [MinLength(1)] int[] ids)
     {
         // workaround for https://github.com/dotnet/aspnetcore/issues/61770
         var Context = httpRequest.HttpContext.RequestServices.GetRequiredService<CatalogContext>();
