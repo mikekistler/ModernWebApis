@@ -72,3 +72,22 @@ Content-Type: application/json-patch+json
   }
 ]
 
+### Create a new item
+
+POST {{HostAddress}}/catalog/items
+content-type: application/json
+
+{
+  "id": 157,
+  "name": "Special Order Running Shoes",
+  "description": "Lightweight and breathable running shoes for all-day comfort.",
+  "sku": "5373-5235",
+  "price": 149.99,
+  "pictureFileName": "57.webp",
+  "catalogType": "Footwear",
+  "catalogBrand": "Zephyr",
+  "availableStock": 15,
+  "restockThreshold": 10,
+  "maxStockThreshold": 250,
+  "onReorder": false
+}
