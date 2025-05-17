@@ -50,7 +50,7 @@ Content-Type: application/json-patch+json
   {
     "op": "replace",
     "path": "/price",
-    "value": 109.99
+    "value": 129.99
   }
 ]
 
