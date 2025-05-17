@@ -33,6 +33,18 @@ public static class CatalogApi
         return app;
     }
 
+    /// <summary>
+    /// List catalog items.
+    /// </summary>
+    /// <remarks>
+    /// Get a paginated list of items in the catalog.
+    /// </remarks>
+    /// <param name="httpRequest"></param>
+    /// <param name="services">The catalog services</param>
+    /// <param name="name">The name of the item to return</param>
+    /// <param name="type">The type of items to return</param>
+    /// <param name="brand">The brand of items to return</param>
+    /// <param name="paginationRequest"></param>
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     public static async Task<Ok<PaginatedItems<CatalogItem>>> GetAllItems(
         HttpRequest httpRequest,
@@ -76,6 +88,15 @@ public static class CatalogApi
         return TypedResults.Ok(new PaginatedItems<CatalogItem>(pageIndex, pageSize, totalItems, itemsOnPage));
     }
 
+    /// <summary>
+    /// Batch get catalog items
+    /// </summary>
+    /// <remarks>
+    /// Get multiple items from the catalog
+    /// </remarks>
+    /// <param name="httpRequest"></param>
+    /// <param name="services">The catalog services</param>
+    /// <param name="ids">The ids of the items to return</param>
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     public static async Task<Ok<List<CatalogItem>>> GetItemsByIds(
         HttpRequest httpRequest,
@@ -89,6 +110,15 @@ public static class CatalogApi
         return TypedResults.Ok(items);
     }
 
+    /// <summary>
+    /// Get a catalog item by id
+    /// </summary>
+    /// <remarks>
+    /// Get a single item from the catalog
+    /// </remarks>
+    /// <param name="httpRequest"></param>
+    /// <param name="services">The catalog services</param>
+    /// <param name="id">The id of the item to return</param>
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     public static async Task<Results<Ok<CatalogItem>, NotFound, BadRequest<ProblemDetails>>> GetItemById(
         HttpRequest httpRequest,
@@ -115,6 +145,15 @@ public static class CatalogApi
         return TypedResults.Ok(item);
     }
 
+    /// <summary>
+    /// Get a catalog item picture by id
+    /// </summary>
+    /// <remarks>
+    /// Get a single item picture from the catalog
+    /// </remarks>
+    /// <param name="httpRequest"></param>
+    /// <param name="environment">The web host environment</param>
+    /// <param name="id">The id of the item to return</param>
     [ProducesResponseType<byte[]>(StatusCodes.Status200OK, "application/octet-stream",
         [ "image/png", "image/gif", "image/jpeg", "image/bmp", "image/tiff",
           "image/wmf", "image/jp2", "image/svg+xml", "image/webp" ])]
@@ -142,21 +181,32 @@ public static class CatalogApi
         return TypedResults.PhysicalFile(path, mimetype, lastModified: lastModified);
     }
 
+    /// <summary>
+    /// Update a catalog item
+    /// </summary>
+    /// <remarks>
+    /// Update a single item in the catalog
+    /// </remarks>
+    /// <param name="httpRequest"></param>
+    /// <param name="services">The catalog services</param>
+    /// <param name="id">The id of the item to update</param>
+    /// <param name="patchDoc">The patch document to apply</param>
     public static async Task<Results<Ok<CatalogItem>, ValidationProblem, NotFound<ProblemDetails>>> UpdateItem(
-        HttpContext httpContext,
-        int id,
+        HttpRequest httpRequest,
         [AsParameters] CatalogServices services,
+        int id,
         JsonPatchDocument<CatalogItem> patchDoc
     )
     {
         // workaround for https://github.com/dotnet/aspnetcore/issues/61770
-        var Context = httpContext.RequestServices.GetRequiredService<CatalogContext>();
+        var Context = httpRequest.HttpContext.RequestServices.GetRequiredService<CatalogContext>();
 
         var catalogItem = await Context.CatalogItems.SingleOrDefaultAsync(i => i.Id == id);
 
         if (catalogItem == null)
         {
-            return TypedResults.NotFound<ProblemDetails>(new (){
+            return TypedResults.NotFound<ProblemDetails>(new()
+            {
                 Detail = $"Item with id {id} not found."
             });
         }
@@ -184,6 +234,15 @@ public static class CatalogApi
         return TypedResults.Ok(catalogItem);
     }
 
+    /// <summary>
+    /// Create a catalog item
+    /// </summary>
+    /// <remarks>
+    /// Create a new item in the catalog
+    /// </remarks>
+    /// <param name="httpRequest"></param>
+    /// <param name="services">The catalog services</param>
+    /// <param name="product">The item to create</param>
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest, "application/problem+json")]
     public static async Task<Created> CreateItem(
         HttpRequest httpRequest,
@@ -213,6 +272,15 @@ public static class CatalogApi
         return TypedResults.Created($"/api/catalog/items/{item.Id}");
     }
 
+    /// <summary>
+    /// Delete a catalog item
+    /// </summary>
+    /// <remarks>
+    /// Delete a single item from the catalog
+    /// </remarks>
+    /// <param name="httpRequest"></param>
+    /// <param name="services">The catalog services</param>
+    /// <param name="id">The id of the item to delete</param>
     public static async Task<Results<NoContent, NotFound>> DeleteItemById(
         HttpRequest httpRequest,
         [AsParameters] CatalogServices services,
