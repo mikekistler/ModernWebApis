@@ -11,6 +11,9 @@ public class CatalogItem
     // Detailed description of the product
     public string? Description { get; set; }
 
+    // Product's unique code or SKU
+    public string? Sku { get; set; }
+
     // Current price of the product
     public decimal Price { get; set; }
 
