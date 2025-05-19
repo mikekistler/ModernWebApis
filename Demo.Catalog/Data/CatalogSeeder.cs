@@ -52,6 +52,7 @@ public static class CatalogSeeder
                 AvailableStock = 100,
                 MaxStockThreshold = 200,
                 RestockThreshold = 10,
+                RestockAmount = 50,
                 PictureFileName = $"{source.Id}.webp",
             }).ToArray();
 

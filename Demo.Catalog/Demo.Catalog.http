@@ -88,6 +88,7 @@ content-type: application/json
   "catalogBrand": "Zephyr",
   "availableStock": 15,
   "restockThreshold": 10,
+  "restockAmount": 50,
   "maxStockThreshold": 250,
   "onReorder": false
 }

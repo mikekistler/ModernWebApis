@@ -56,6 +56,11 @@ public class CatalogItem
     public int RestockThreshold { get; set; }
 
     /// <summary>
+    /// Number of units to order when restocking.
+    /// </summary>
+    public int RestockAmount { get; set; }
+
+    /// <summary>
     /// Maximum number of units that can be in-stock at any time (due to physical/logistical constraints in warehouses).
     /// </summary>
     public int MaxStockThreshold { get; set; }
