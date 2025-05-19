@@ -1,0 +1,111 @@
+@Host = https://localhost:7516
+
+### Health check
+GET {{Host}}/health
+
+### OpenAPI spec
+GET {{Host}}/openapi/v1.json
+Accept: application/json
+
+### List items (default pagination)
+GET {{Host}}/catalog/items
+Accept: application/json
+
+### List items with filters
+GET {{Host}}/catalog/items?name=Spe&brand=Zephyr&type=Footwear&pageSize=5&pageIndex=0
+Accept: application/json
+
+### Invalid pageIndex (negative)
+GET {{Host}}/catalog/items?pageIndex=-1
+Accept: application/problem+json
+
+### Invalid pageSize (non-integer)
+GET {{Host}}/catalog/items?pageSize=abc
+Accept: application/problem+json
+
+### Batch get items (valid ids)
+GET {{Host}}/catalog/items/by?ids=1&ids=2&ids=3
+Accept: application/json
+
+### Batch get items (missing ids)
+GET {{Host}}/catalog/items/by
+Accept: application/problem+json
+
+### Batch get items (invalid ids)
+GET {{Host}}/catalog/items/by?ids=abc,xyz
+Accept: application/problem+json
+
+### Get item by id (valid)
+GET {{Host}}/catalog/items/1
+Accept: application/json
+
+### Get item by id (zero, invalid)
+GET {{Host}}/catalog/items/0
+Accept: application/problem+json
+
+### Get item by id (negative, invalid)
+GET {{Host}}/catalog/items/-5
+Accept: application/problem+json
+
+### Get item by id (not found)
+GET {{Host}}/catalog/items/9999
+Accept: application/json
+
+### Delete item by id (valid)
+DELETE {{Host}}/catalog/items/2
+
+### Delete item by id (not found)
+DELETE {{Host}}/catalog/items/9999
+
+### Get item picture (valid)
+GET {{Host}}/catalog/items/1/pic
+
+### Get item picture (not found)
+GET {{Host}}/catalog/items/9999/pic
+
+### Create item (valid)
+POST {{Host}}/catalog/items
+Content-Type: application/json
+
+{
+  "name": "Test Product",
+  "description": "A valid description over ten characters",
+  "sku": "1234-5678",
+  "price": 99.99,
+  "pictureFileName": null,
+  "catalogType": "Gadgets",
+  "catalogBrand": "Acme",
+  "availableStock": 10,
+  "restockThreshold": 5,
+  "maxStockThreshold": 100,
+  "onReorder": false
+}
+
+### Create item (missing required fields)
+POST {{Host}}/catalog/items
+Content-Type: application/json
+
+{
+  "description": "Missing name field",
+  "sku": "0000-0000",
+  "price": 10.0,
+  "catalogType": "Type",
+  "catalogBrand": "Brand"
+}
+
+### Create item (invalid values and lengths)
+POST {{Host}}/catalog/items
+Content-Type: application/json
+
+{
+  "name": "AB",
+  "description": "Short",
+  "sku": "12-345678",
+  "price": 0.0,
+  "catalogType": "TypeTypeTypeTypeTypeTypeTypeTypeTypeTypeTypeTypeTypeTypeTypeTypeTypeType",
+  "catalogBrand": null,
+  "availableStock": 0,
+  "restockThreshold": 5,
+  "maxStockThreshold": 1,
+  "onReorder": false
+}
