@@ -25,8 +25,7 @@ public static class CatalogApi
 
         api.MapGet("/items/{id:int}/pic", GetItemPictureById);
 
-        // Disable patch endpoint due to known issue with Validation and JsonPatchDocument
-        // api.MapPatch("/items/{id:int}", UpdateItem);
+        api.MapPatch("/items/{id:int}", UpdateItem);
 
         api.MapPost("/items", CreateItem);
 

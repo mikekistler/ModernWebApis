@@ -16,11 +16,6 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <!-- Enable the generation of interceptors for the validation attributes -->
-    <InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.AspNetCore.Http.Validation.Generated</InterceptorsNamespaces>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <!-- Enable XML documentation file generation -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <!-- Suppress CS1591 Missing XML comment for publicly visible type or member -->
