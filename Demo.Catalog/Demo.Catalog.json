@@ -41,6 +41,8 @@
             "name": "pageSize",
             "in": "query",
             "schema": {
+              "maximum": 100,
+              "minimum": 1,
               "type": "integer",
               "format": "int32",
               "default": 10
@@ -50,6 +52,8 @@
             "name": "pageIndex",
             "in": "query",
             "schema": {
+              "maximum": 2147483647,
+              "minimum": 0,
               "type": "integer",
               "format": "int32",
               "default": 0
