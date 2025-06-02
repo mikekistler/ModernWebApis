@@ -13,6 +13,8 @@ builder.Services.AddValidation();
 // Add services to the container.
 builder.Services.AddProblemDetails();
 
+builder.Services.AddExceptionHandler<JsonExceptionHandler>();
+
 // Add the CatalogContext to the DI container
 builder.Services.AddDbContext<CatalogContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("CatalogDb")));
