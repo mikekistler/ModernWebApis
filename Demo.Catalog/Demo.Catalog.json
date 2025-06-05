@@ -419,7 +419,8 @@
               "null",
               "string"
             ],
-            "description": "Name of the product."
+            "description": "Name of the product.",
+            "example": "Wanderer Black Hiking Boot"
           },
           "description": {
             "maxLength": 500,
@@ -428,7 +429,8 @@
               "null",
               "string"
             ],
-            "description": "Detailed description of the product."
+            "description": "Detailed description of the product.",
+            "example": "Daybird's Wanderer Hiking Boots in sleek black are perfect for all your outdoor adventures."
           },
           "sku": {
             "pattern": "^[0-9]{4}-[0-9]{4}$",
@@ -436,14 +438,16 @@
               "null",
               "string"
             ],
-            "description": "Product's unique code or SKU"
+            "description": "Product's unique code or SKU",
+            "example": "5819-6982"
           },
           "price": {
             "maximum": 10000,
             "minimum": 0.01,
             "type": "number",
             "description": "Current price of the product.",
-            "format": "double"
+            "format": "double",
+            "example": 109.99
           },
           "pictureFileName": {
             "type": [
@@ -481,7 +485,8 @@
           "restockAmount": {
             "type": "integer",
             "description": "Number of units to order when restocking.",
-            "format": "int32"
+            "format": "int32",
+            "example": 10
           },
           "maxStockThreshold": {
             "type": "integer",

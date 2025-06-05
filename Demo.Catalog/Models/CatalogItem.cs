@@ -15,6 +15,9 @@ public class CatalogItem : IValidatableObject
     /// <summary>
     /// Name of the product.
     /// </summary>
+    /// <example>
+    /// Wanderer Black Hiking Boot
+    /// </example>
     [Required]
     [MaxLength(50)]
     [MinLength(3, ErrorMessage = "{0} must be at least 3 characters long.")]
@@ -23,6 +26,9 @@ public class CatalogItem : IValidatableObject
     /// <summary>
     /// Detailed description of the product.
     /// </summary>
+    /// <example>
+    /// Daybird's Wanderer Hiking Boots in sleek black are perfect for all your outdoor adventures.
+    /// </example>
     [Required]
     [StringLength(500, MinimumLength = 10)]
     public string? Description { get; set; }
@@ -30,6 +36,9 @@ public class CatalogItem : IValidatableObject
     /// <summary>
     /// Product's unique code or SKU
     /// </summary>
+    /// <example>
+    /// 5819-6982
+    /// </example>
     [Required]
     [RegularExpression(@"^[0-9]{4}-[0-9]{4}$", ErrorMessage = "SKU must be in the format 'XXXX-XXXX' where X is a digit.")]
     public string? Sku { get; set; }
@@ -37,6 +46,9 @@ public class CatalogItem : IValidatableObject
     /// <summary>
     /// Current price of the product.
     /// </summary>
+    /// <example>
+    /// 109.99
+    /// </example>
     [Required]
     [Range(0.01, 10000)]
     public decimal Price { get; set; }
@@ -73,6 +85,9 @@ public class CatalogItem : IValidatableObject
     /// <summary>
     /// Number of units to order when restocking.
     /// </summary>
+    /// <example>
+    /// 10
+    /// </example>
     [MultipleOfTen]
     public int RestockAmount { get; set; }
 
