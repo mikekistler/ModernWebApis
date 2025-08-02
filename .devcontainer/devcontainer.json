@@ -31,7 +31,7 @@
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "dotnet restore",
 	,"postCreateCommand": "echo 'export PROMPT_DIRTRIM=1' >> ~/.bashrc"
-	,"onCreateCommand": "dotnet new install Aspire.ProjectTemplates::9.2.0 --force"
+	,"onCreateCommand": "dotnet new install Aspire.ProjectTemplates --force && dotnet tool install -g Aspire.Cli"
 	,"postStartCommand": "dotnet dev-certs https --trust"
 
 	// Configure tool-specific properties.
