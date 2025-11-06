@@ -36,6 +36,8 @@ app.UseStatusCodePages();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    // Also in YAML
+    app.MapOpenApi("/openapi/{documentName}.yaml");
     app.MapScalarApiReference();
 }
 
